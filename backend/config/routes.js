@@ -1,3 +1,4 @@
 module.exports = app =>{
-    app.route('/users').post(app.api.user.save)
+    const {save} = app.api.user
+    app.route('/users').post(save)
 }
