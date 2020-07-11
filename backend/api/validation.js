@@ -34,5 +34,9 @@ module.exports = app =>{
         if(!validPass) throw msg
     }
 
-    return {existOrError,notExistsOrError,equalsOrError,validEmail,validPassword}
+    function negative(value,msg){
+        if(value<0) throw msg
+    }
+
+    return {existOrError,notExistsOrError,equalsOrError,validEmail,validPassword, negative}
 }

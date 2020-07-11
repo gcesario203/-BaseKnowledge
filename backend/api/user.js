@@ -36,36 +36,30 @@ module.exports = app => {
             app.db('users')
                 .update(user)
                 .where({ id: user.id })
-                .then(_ => res.status(204))
+                .then(_ => res.status(202))
                 .catch(err => res.status(500).send(err))
         } else {
             app.db('users')
                 .insert(user)
-                .then(_ => res.status(204).send())
+                .then(_ => res.status(201).send())
                 .catch(err => res.status(500).send(err))
         }
     }
 
     const get = (req, res) => {
-        req.params.id ? app.db('users')
-                        .select('id', 'name', 'email', 'admin')
-                        .where({ id: req.params.id })
-                        .then(user => res.json(user))
-                        .catch(err => res.status(500).send(err)) : app.db('users')
-                                                        .select('id', 'name', 'email', 'admin')
-                                                        .then(users => res.json(users))
-                                                        .catch(err => res.status(500).send(err))
-
-    }
-
-    const deleteUser = (req, res) => {
-        const paramId = req.params.id
-        app.db('users')
-            .where({ id: paramId })
-            .del()
-            .then(_ => res.status(200))
+        if(req.params.id){
+            app.db('users')
+            .select('id', 'name', 'email', 'admin')
+            .where({ id: req.params.id })
+            .then(user => res.json(user))
             .catch(err => res.status(500).send(err))
+        }else{
+            app.db('users')
+            .select('id', 'name', 'email', 'admin')
+            .then(users => res.json(users))
+            .catch(err => res.status(500).send(err))
+        }
     }
 
-    return { save, get, deleteUser }
+    return { save, get }
 }

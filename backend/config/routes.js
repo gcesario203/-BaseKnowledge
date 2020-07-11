@@ -1,6 +1,17 @@
-module.exports = app =>{
-    const {save,get,deleteUser} = app.api.user
+module.exports = app => {
+    app.route('/users').post(app.api.user.save)
+        .get(app.api.user.get)
+        
+    app.route('/users/:id')
+        .get(app.api.user.get)
+        .put(app.api.user.save)
 
-    app.route('/users').post(save).get(get)
-    app.route('/users/:id').get(get).delete(deleteUser).put(save)
+    app.route('/categories')
+        .post(app.api.category.save)
+        .get(app.api.category.get)
+
+    app.route('/categories/:id')
+        .put(app.api.category.save)
+        .get(app.api.category.getById)
+        .delete(app.api.category.remove)
 }
