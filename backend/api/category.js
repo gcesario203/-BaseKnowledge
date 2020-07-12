@@ -89,5 +89,23 @@ module.exports = app =>{
         .catch(err=>res.status(500).send(err))
     }
 
-    return {save,remove,get,getById}
+    const bigTree = (categories,tree)=>{
+        if(!tree) tree = categories.filter(c=>!c.parentId)//Pegar raiz 
+
+        tree = tree.map(parentNode =>{
+            const isChild = node => node.parentId === parentNode.id
+            parentNode.children = bigTree(categories,categories.filter(isChild))
+
+            return parentNode
+        })
+        return tree
+    }
+
+    const getTree = (req,res)=>{
+        app.db('categories')
+        .then(cat=>res.json(bigTree(withPath(cat))))
+        .catch(err=>res.status(500).send(err))
+    }
+
+    return {save,remove,get,getById,getTree}
 }
