@@ -89,7 +89,7 @@ module.exports = app => {
                 .where({ id: req.params.id })
                 .first()
 
-            existOrError(existId, "Categoria inexistente inexistente")
+            existOrError(existId, "Categoria  inexistente")
         } catch (msg) {
             return res.status(400).send(msg)
         }

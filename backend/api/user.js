@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt-nodejs')
 
 module.exports = app => {
-    const { existOrError, notExistsOrError, equalsOrError, validEmail, validPassword } = app.api.validation
+    const { existOrError, notExistsOrError, equalsOrError, validEmail, validPassword, validId, } = app.api.validation
     const encryptPassword = password => {
         const salt = bcrypt.genSaltSync(10)
         return bcrypt.hashSync(password, salt)
@@ -48,20 +48,31 @@ module.exports = app => {
     }
 
     const get = (req, res) => {
-        if (req.params.id) {
-             app.db('users')
-                .select('id', 'name', 'email', 'admin')
-                .where({ id: req.params.id })
-                .then(user => res.json(user))
-                .catch(err => res.status(500).send(err))
-        } else {
-             app.db('users')
-                .select('id', 'name', 'email', 'admin')
-                .first()
-                .then(users => res.json(users))
-                .catch(err => res.status(500).send(err))
-        }
+        app.db('users')
+            .select('id', 'name', 'email', 'admin')
+            .first()
+            .then(users => res.json(users))
+            .catch(err => res.status(500).send(err))
     }
 
-    return { save, get }
+    const getById = async (req, res) => {
+        try {
+            validId(req.params.id, "ID invalido")
+
+            const existId = await app.db('users')
+                .where({ id: req.params.id })
+                .first()
+
+            existOrError(existId, "Usuário inexistente")
+        } catch (msg) {
+            return res.status(400).send(msg)
+        }
+        app.db('users')
+            .select('id', 'name', 'email', 'admin')
+            .where({ id: req.params.id })
+            .then(user => res.json(user))
+            .catch(err => res.status(500).send(err))
+    }
+
+    return { save, get ,getById}
 }
