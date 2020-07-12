@@ -1,111 +1,122 @@
-module.exports = app =>{
-    const {existOrError, notExistsOrError, negative} = app.api.validation
+module.exports = app => {
+    const { existOrError, notExistsOrError, validId } = app.api.validation
 
-    const save = (req,res)=>{
-        const category = {...req.body}
-        if(req.params.id) category.id = req.params.id
+    const save = (req, res) => {
+        const category = { ...req.body }
+        if (req.params.id) category.id = req.params.id
 
         try {
-            existOrError(category.name,"Nome não informado")
+            existOrError(category.name, "Nome não informado")
         } catch (msg) {
             return res.status(400).send(msg)
         }
 
-        if(category.id){
+        if (category.id) {
             app.db('categories')
-            .update(category)
-            .where({id:category.id})
-            .then(_=>res.status(202))
-            .catch(err=>res.status(500).send(err))
-        }else{
+                .update(category)
+                .where({ id: category.id })
+                .then(_ => res.status(202))
+                .catch(err => res.status(500).send(err))
+        } else {
             app.db('categories')
-            .insert(category)
-            .then(_=>res.status(201))
-            .catch(err=>res.status(500).send(err))
+                .insert(category)
+                .then(_ => res.status(201))
+                .catch(err => res.status(500).send(err))
         }
     }
 
-    const remove = async (req,res)=>{
+    const remove = async (req, res) => {
         try {
-            negative(req.params.id,"Não usar número negativos")
-            existOrError(req.params.id,"Código da categoria não informado")
+            validId(req.params.id, "Usar um id valido")
+            existOrError(req.params.id, "Código da categoria não informado")
 
             const subcategory = await app.db('categories')
-                .where({parentId:req.params.id})
+                .where({ parentId: req.params.id })
 
             notExistsOrError(subcategory, "Categoria possui subcategorias")
 
             const articles = await app.db('articles')
-                .where({categoryId:req.params.id})
+                .where({ categoryId: req.params.id })
 
-            notExistsOrError(articles,"A categoria possui artigos")
+            notExistsOrError(articles, "A categoria possui artigos")
 
             const rowsDelete = await app.db('categories')
-                .where({id:req.params.id}).del()
+                .where({ id: req.params.id }).del()
 
-            existOrError(rowsDelete,"Categoria não foi encontrada")
+            existOrError(rowsDelete, "Categoria não foi encontrada")
 
             res.status(204).send()
         } catch (msg) {
-            res.status(400).send(msg)
+            return res.status(400).send(msg)
         }
     }
 
-    const withPath = categories =>{
-        const getParent = (categories, parentId)=>{
-            const parent = categories.filter(item =>item.id === parentId)
+    const withPath = categories => {
+        const getParent = (categories, parentId) => {
+            const parent = categories.filter(item => item.id === parentId)
 
-            return parent.length? parent[0] : null
+            return parent.length ? parent[0] : null
         }
 
-        const categoriesWithPath = categories.map(cat=>{
+        const categoriesWithPath = categories.map(cat => {
             let path = cat.name
-            let parent = getParent(categories,cat.parentId)
+            let parent = getParent(categories, cat.parentId)
 
-            while(parent){
+            while (parent) {
                 path = `${parent.name} > ${path}`
-                parent = getParent(categories,parent.parentId)
+                parent = getParent(categories, parent.parentId)
             }
 
-            return {...cat,path}
+            return { ...cat, path }
         })
 
-        categoriesWithPath.sort((a,b)=>a.path>b.path?1:a.path<b.path?-1:0)
+        categoriesWithPath.sort((a, b) => a.path > b.path ? 1 : a.path < b.path ? -1 : 0)
 
         return categoriesWithPath
     }
 
-    const get = (req,res)=>{
+    const get = (req, res) => {
         app.db('categories')
-        .then(categories =>res.json(withPath(categories)))
-        .catch(err=>res.status(500).send(err))
+            .then(categories => res.json(withPath(categories)))
+            .catch(err => res.status(500).send(err))
     }
 
-    const getById = (req,res)=>{
-        app.db('categories')
-        .where({id:req.params.id})
-        .first()
-        .then(category=>res.json(category))
-        .catch(err=>res.status(500).send(err))
+    const getById = async (req, res) => {
+        try {
+            validId(req.params.id, "ID invalido")
+
+            const existId = await app.db('categories')
+                .where({ id: req.params.id })
+                .first()
+
+            existOrError(existId, "Categoria inexistente inexistente")
+        } catch (msg) {
+            return res.status(400).send(msg)
+        }
+        await app.db('categories')
+            .where({ id: req.params.id })
+            .first()
+            .then(category => res.json(category))
+            .catch(err => res.status(500).send(err))
     }
 
-    const bigTree = (categories,tree)=>{
-        if(!tree) tree = categories.filter(c=>!c.parentId)//Pegar raiz 
+    const bigTree = (categories, tree) => {
+        if (!tree) tree = categories.filter(c => !c.parentId)//Pegar raiz 
 
-        tree = tree.map(parentNode =>{
+        tree = tree.map(parentNode => {
             const isChild = node => node.parentId === parentNode.id
-            parentNode.children = bigTree(categories,categories.filter(isChild))
+            parentNode.children = bigTree(categories, categories.filter(isChild))
 
             return parentNode
         })
         return tree
     }
 
-    const getTree = (req,res)=>{
+    const getTree = (req, res) => {
         app.db('categories')
-        .then(cat=>res.json(bigTree(withPath(cat))))
-        .catch(err=>res.status(500).send(err))
+            .then(cat => res.json(bigTree(withPath(cat))))
+            .catch(err => res.status(500).send(err))
     }
 
-    return {save,remove,get,getById,getTree}
+    return { save, remove, get, getById, getTree }
 }

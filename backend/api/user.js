@@ -15,6 +15,7 @@ module.exports = app => {
             existOrError(user.name, "Nome não informado")
             existOrError(user.email, "E-mail não informado")
             validEmail(user.email, "E-mail invalido")
+            validId(req.params.id, "ID invalido")
             existOrError(user.password, "Senha não informada")
             existOrError(user.confirmPassword, "É necessário confirmar sua senha")
             validPassword(user.password, "Senha inválida, a senha precisa ter de 8 a 15 dígitos")
@@ -47,17 +48,18 @@ module.exports = app => {
     }
 
     const get = (req, res) => {
-        if(req.params.id){
-            app.db('users')
-            .select('id', 'name', 'email', 'admin')
-            .where({ id: req.params.id })
-            .then(user => res.json(user))
-            .catch(err => res.status(500).send(err))
-        }else{
-            app.db('users')
-            .select('id', 'name', 'email', 'admin')
-            .then(users => res.json(users))
-            .catch(err => res.status(500).send(err))
+        if (req.params.id) {
+             app.db('users')
+                .select('id', 'name', 'email', 'admin')
+                .where({ id: req.params.id })
+                .then(user => res.json(user))
+                .catch(err => res.status(500).send(err))
+        } else {
+             app.db('users')
+                .select('id', 'name', 'email', 'admin')
+                .first()
+                .then(users => res.json(users))
+                .catch(err => res.status(500).send(err))
         }
     }
 

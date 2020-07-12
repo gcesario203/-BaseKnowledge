@@ -34,9 +34,13 @@ module.exports = app =>{
         if(!validPass) throw msg
     }
 
-    function negative(value,msg){
-        if(value<0) throw msg
+    function validId(value,msg){
+        const defRegex = /^[0-9]+$/
+
+        let validId = defRegex.exec(value)
+
+        if(!validId) throw msg
     }
 
-    return {existOrError,notExistsOrError,equalsOrError,validEmail,validPassword, negative}
+    return {existOrError,notExistsOrError,equalsOrError,validEmail,validPassword, validId}
 }
