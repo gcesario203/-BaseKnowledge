@@ -17,6 +17,7 @@ consign()
     .then('./api/validation.js')
     .then('./api')
     .then('./config/routes')
+    .then('./schedule')
     .into(app)
 
 app.listen(port,()=>{
