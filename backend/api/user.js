@@ -11,6 +11,9 @@ module.exports = app => {
         const user = { ...req.body }
         if (req.params.id) user.id = req.params.id
 
+        if(!req.originalUrl.startsWith('/users')) user.admin = false
+        if(!req.user || !req.user.admin) user.admin = false
+
         try {
             existOrError(user.name, "Nome não informado")
             existOrError(user.email, "E-mail não informado")
@@ -85,7 +88,7 @@ module.exports = app => {
                 .update({ deletedAt: new Date() })
                 .where({ id: req.params.id })
 
-            existOrError(rowsUpdated,"Usuário inexistente")
+            existOrError(rowsUpdated, "Usuário inexistente")
 
             res.status(204)
         } catch (msg) {
@@ -93,5 +96,5 @@ module.exports = app => {
         }
     }
 
-    return { save, get, getById, remove}
+    return { save, get, getById, remove }
 }
