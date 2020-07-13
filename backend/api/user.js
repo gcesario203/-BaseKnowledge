@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt-nodejs')
 
 module.exports = app => {
-    const { existOrError, notExistsOrError, equalsOrError, validEmail,  validId, } = app.api.validation
+    const { existOrError, notExistsOrError, equalsOrError, validEmail, validId, } = app.api.validation
     const encryptPassword = password => {
         const salt = bcrypt.genSaltSync(10)
         return bcrypt.hashSync(password, salt)
@@ -35,6 +35,7 @@ module.exports = app => {
             app.db('users')
                 .update(user)
                 .where({ id: user.id })
+                .whereNull('deletedAt')
                 .then(_ => res.status(202))
                 .catch(err => res.status(500).send(err))
         } else {
@@ -47,7 +48,8 @@ module.exports = app => {
 
     const get = (req, res) => {
         app.db('users')
-            .select('id','name','email','admin')
+            .select('id', 'name', 'email', 'admin')
+            .whereNull('deletedAt')
             .then(users => res.json(users))
             .catch(err => res.status(500).send(err))
     }
@@ -67,9 +69,29 @@ module.exports = app => {
         app.db('users')
             .select('id', 'name', 'email', 'admin')
             .where({ id: req.params.id })
+            .whereNull('deletedAt')
             .then(user => res.json(user))
             .catch(err => res.status(500).send(err))
     }
 
-    return { save, get ,getById}
+    const remove = async (req, res) => {
+        try {
+            const articles = await app.db('articles')
+                .where({ userId: req.params.id })
+
+            notExistsOrError(articles, "Usuário possui artigos.")
+
+            const rowsUpdated = await app.db('users')
+                .update({ deletedAt: new Date() })
+                .where({ id: req.params.id })
+
+            existOrError(rowsUpdated,"Usuário inexistente")
+
+            res.status(204)
+        } catch (msg) {
+            return res.status(400).send(msg)
+        }
+    }
+
+    return { save, get, getById, remove}
 }
