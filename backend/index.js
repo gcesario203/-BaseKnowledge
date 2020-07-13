@@ -3,10 +3,13 @@ const port = 3000
 const consign = require('consign')
 const db = require('./config/db')
 const admin = require('./config/admin')
+const mongoose = require('mongoose')
+require('./config/mongodb')
 
 
 app.db = db
 app.admin = admin
+app.mongoose = mongoose
 
 consign()
     .include('./config/passport.js')
