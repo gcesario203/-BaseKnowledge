@@ -8,6 +8,10 @@ import './config/bootstrap'
 
 Vue.config.productionTip = false
 
+//TEMPORARIO PELO AMOR DE DEUS CESARIO DO FUTURO
+
+require('axios').defaults.headers.common['Authorization']= 'bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6OSwibmFtZSI6Ikp1bGlvIiwiZW1haWwiOiJhYWFhMjIyMjIyQGdtYWlsLmNvbSIsImFkbWluIjp0cnVlLCJpYXQiOjE1OTQ2NzcwMDQsImV4cCI6MTU5NDkzNjIwNH0.tq0I_pcHgccHhhZ3mruEkB_hFpduXnWOyDakGMy-xOE'
+
 new Vue({
   store,
   router,
