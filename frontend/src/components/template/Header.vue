@@ -1,9 +1,9 @@
 <template>
     <div class="header">
-        <a href="#" class="toggle" @click="toggleMenu()" v-if="!hideToggle">
+        <a class="toggle" @click="toggleMenu()" v-if="!hideToggle">
             <i class="fa fa-lg" :class="icon"></i>
         </a>
-        <h1 class="title">{{title}}</h1>
+        <h1 class="title"><router-link to="/">{{title}}</router-link></h1>
         <UserDropdown v-if="!hideUserDropdown"></UserDropdown>
     </div>
 </template>
@@ -47,6 +47,17 @@ export default {
         font-weight: 100;
         flex-grow: 1;
         text-align: center;
+        transition: 500ms;
+    }
+
+    .title a{
+        color:rgb(34, 36, 34);
+        text-decoration: none;
+        transition: 500ms;
+    }
+    .title a:hover{
+        color:rgba(34, 36, 34,0.4);
+        text-decoration: none;
     }
 
     .title a{
