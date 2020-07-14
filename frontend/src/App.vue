@@ -35,6 +35,7 @@ export default {
     -moz-osx-font-smoothing: grayscale;
 
     display: grid;
+    height: 100vh;
     grid-template-rows: 60px 1fr 40px;
     grid-template-columns: 300px 1fr;
 
