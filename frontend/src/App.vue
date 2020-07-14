@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <Header></Header>
+    <Header title="Knowledge basement" :hideToggle="false"></Header>
     <Menu></Menu>
-    <Content></Content>
+    <Cont></Cont>
     <Footer></Footer>
   </div>
 </template>
@@ -10,12 +10,12 @@
 <script>
 import Header from './components/template/Header'
 import Menu from './components/template/Menu'
-import Content from './components/template/Content'
+import Cont from './components/template/Cont'
 import Footer from './components/template/Footer'
 
 export default {
   name: 'App',
-  components: {Header,Menu,Content,Footer}
+  components: {Header,Menu,Cont,Footer}
 }
 </script>
 
@@ -39,7 +39,7 @@ export default {
     grid-template-areas:
       "header header"
       "menu content"
-      "footer footer"
+      "menu footer"
     ;
   }
 </style>
