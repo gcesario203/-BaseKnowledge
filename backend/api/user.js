@@ -39,7 +39,7 @@ module.exports = app => {
                 .update(user)
                 .where({ id: user.id })
                 .whereNull('deletedAt')
-                .then(_ => res.status(202))
+                .then(_ => res.status(202).send())
                 .catch(err => res.status(500).send(err))
         } else {
             app.db('users')
@@ -90,7 +90,7 @@ module.exports = app => {
 
             existOrError(rowsUpdated, "Usuário inexistente")
 
-            res.status(204)
+            return res.status(204).send()
         } catch (msg) {
             return res.status(400).send(msg)
         }

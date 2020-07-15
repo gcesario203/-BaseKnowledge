@@ -1,6 +1,6 @@
 <template>
   <div class="user-admin">
-    <d-form>
+    <b-form>
       <input type="hidden" id="user-id" v-model="user.id" />
       <b-row>
         <b-col md="6" sm="12">
@@ -9,6 +9,7 @@
               id="user-name"
               type="text"
               v-model="user.name"
+              :readonly="mode === 'remove'"
               required
               placeholder="Digite seu nome"
             ></b-form-input>
@@ -20,6 +21,7 @@
               id="user-email"
               type="text"
               v-model="user.email"
+              :readonly="mode === 'remove'"
               required
               placeholder="Digite seu e-mail"
             ></b-form-input>
@@ -34,6 +36,7 @@
               id="user-password"
               type="password"
               v-model="user.password"
+              :readonly="mode === 'remove'"
               required
               placeholder="Digite sua senha"
             ></b-form-input>
@@ -45,18 +48,32 @@
               id="user-confirmPassword"
               type="password"
               v-model="user.confirmPassword"
+              :readonly="mode === 'remove'"
               required
               placeholder="Confirme sua senha"
             ></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
-      <b-button variant="primary" v-if="mode === 'save'" @click="save">Salvar</b-button>
-      <b-button variant="danger" v-if="mode === 'remove'" @click="remove">Remover</b-button>
-      <b-button class="ml-2" @click="reset">Cancelar</b-button>
-    </d-form>
+      <b-row>
+        <b-col xs="12">
+          <b-button variant="primary" v-if="mode === 'save'" @click="save">Salvar</b-button>
+          <b-button variant="danger" v-if="mode === 'remove'" @click="remove">Remover</b-button>
+          <b-button class="ml-2" @click="reset">Cancelar</b-button>
+        </b-col>
+      </b-row>
+    </b-form>
     <hr />
-    <b-table hover striped :items="users" :fields="fields"></b-table>
+    <b-table hover striped :items="users" :fields="fields">
+      <template v-slot:cell(actions)="row">
+        <b-button variant="warning" @click="loadUser(row.item)" class="mr-2">
+          <i class="fa fa-pencil"></i>
+        </b-button>
+        <b-button variant="danger" @click="loadUser(row.item,'remove')">
+          <i class="fa fa-trash"></i>
+        </b-button>
+      </template>
+    </b-table>
   </div>
 </template>
 
@@ -101,19 +118,24 @@ export default {
       const id = this.user.id ? `/${this.user.id}` : "";
       axios[method](`${baseApiUrl}/users${id}`, this.user)
         .then(() => {
-          this.$toasted.global.defaultSuccess()
-          this.reset()
+          this.$toasted.global.defaultSuccess();
+          this.reset();
         })
-        .catch(showError)
+        .catch(showError);
     },
-    remove(){
-        const id = this.user.id
-        axios.delete(`${baseApiUrl}/users/${id}`)
-        .then(()=>{
-            this.$toasted.global.defaultError()
-            this.reset()
+    remove() {
+      const id = this.user.id;
+      axios
+        .delete(`${baseApiUrl}/users/${id}`)
+        .then(() => {
+          this.$toasted.global.defaultSuccess();
+          this.reset();
         })
-        .catch(showError)
+        .catch(showError);
+    },
+    loadUser(user, mode = "save") {
+      this.mode = mode;
+      this.user = { ...user };
     }
   },
   mounted() {

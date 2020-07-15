@@ -9,7 +9,7 @@ Vue.use(toasted, {
 Vue.toasted.register(
     'defaultSuccess',
     payload => !payload.msg?'Operação realizada com sucesso!': payload.msg,
-    {type: 'succes' , icon:'check'}
+    {type: 'success' , icon:'check'}
 )
 
 Vue.toasted.register(
