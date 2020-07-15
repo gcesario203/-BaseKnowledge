@@ -4,11 +4,11 @@ module.exports = app => {
     const { existOrError, validId } = app.api.validation
 
     const save = (req, res) => {
-        const article = { ...req.body }
+        const article = {...req.body}
         if (req.params.id) article.id = req.params.id
 
         try {
-            existOrError(article.name, "Nome não informado")
+            existOrError(article.name,"Nome do artigo não informado")
             existOrError(article.description, "Descrição não informado")
             existOrError(article.categoryId, "Categoria não informado")
             existOrError(article.userId, "Autor não informado")
@@ -50,7 +50,7 @@ module.exports = app => {
         }
     }
 
-    const limit = 10
+    const limit = 3
 
     const get = async (req, res) => {
         const page = req.query.page || 1
