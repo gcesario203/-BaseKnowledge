@@ -11,7 +11,7 @@ Vue.config.productionTip = false
 
 //TEMPORARIO PELO AMOR DE DEUS CESARIO DO FUTURO
 
-require('axios').defaults.headers.common['Authorization']= 'bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6OSwibmFtZSI6Ikp1bGlvIiwiZW1haWwiOiJhYWFhMjIyMjIyQGdtYWlsLmNvbSIsImFkbWluIjp0cnVlLCJpYXQiOjE1OTQ2NzcwMDQsImV4cCI6MTU5NDkzNjIwNH0.tq0I_pcHgccHhhZ3mruEkB_hFpduXnWOyDakGMy-xOE'
+require('axios').defaults.headers.common['Authorization']= 'bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MjIsIm5hbWUiOiJ2YWkgbWFubyIsImVtYWlsIjoiYWEyQGdtYWlsLmNvbSIsImFkbWluIjp0cnVlLCJpYXQiOjE1OTQ5Mzc3NTksImV4cCI6MTU5NTE5Njk1OX0.mScdWqoQkHVYAusiJOnfg34S0g-QCSJ5YDeAwlTu3Wc'
 
 new Vue({
   store,

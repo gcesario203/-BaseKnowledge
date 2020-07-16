@@ -135,7 +135,7 @@ export default {
     loadCategories() {
       axios.get(`${baseApiUrl}/categories`).then(res => {
         // this.categories = res.data;
-        this.categories = res.data.map(category => {
+        this.categories = res.data.data.map(category => {
           return { value: category.id, text: category.path };
         });
       });
@@ -143,7 +143,7 @@ export default {
 
     loadUsers() {
       axios.get(`${baseApiUrl}/users`).then(res => {
-        this.users = res.data.map(user => {
+        this.users = res.data.data.map(user => {
           return { value: user.id, text: `${user.name} - ${user.email}` };
         });
       });
