@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     loadArticles() {
-      axios.get(`${baseApiUrl}/articles?page=${this.page}`).then(res => {
+      axios.get(`${baseApiUrl}/articles/?page=${this.page}`).then(res => {
         this.articles = res.data.data;
         this.count = res.data.count;
         this.limit = res.data.limit;
