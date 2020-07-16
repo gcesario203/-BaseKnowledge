@@ -80,5 +80,6 @@ export default {
     .header > a.toggle:hover{
         color: rgba(34, 36, 34, 0.35);
         background-color: rgba(0, 0, 0,0.1);
+        cursor: pointer;
     }
 </style>
