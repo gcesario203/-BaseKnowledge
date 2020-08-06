@@ -9,7 +9,7 @@
               v-model="article.name"
               :readonly="mode === 'remove'"
               required
-              placeholder="Digite o nome da categoria"
+              placeholder="Digite o nome do artigo"
             ></b-form-input>
           </b-form-group>
       <b-form-group label="Descrição:" label-for="article-description">

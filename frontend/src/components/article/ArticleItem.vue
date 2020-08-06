@@ -9,7 +9,7 @@
                 <h2>{{article.name}}</h2>
                 <p>{{article.description}}</p>
                 <span class="article-item-author">
-                    <strong>Autor:</strong>{{article.author}}
+                    <strong>Autor: </strong>{{article.author}}
                 </span>
             </div>
         </router-link>
@@ -51,7 +51,6 @@ export default {
     }
 
     .article-item-image{
-        background: linear-gradient(to right,#fff,rgb(31, 192, 66));
         padding: 0 20px 0 0;
         margin: 0 20px 0 0;
         border: 1px solid #555;
